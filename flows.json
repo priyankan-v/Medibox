@@ -1,0 +1,553 @@
+[
+    {
+        "id": "d4378eb6b9bc2122",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "28a218b1d6ba9133",
+        "type": "mqtt in",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "topic": "PRI-LDR-L",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "1a69bac2a3a00148",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 80,
+        "y": 40,
+        "wires": [
+            [
+                "b8a7815cb78f2ffd"
+            ]
+        ]
+    },
+    {
+        "id": "29d4aa6e746799f7",
+        "type": "mqtt in",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "topic": "PRI-LDR-R",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "1a69bac2a3a00148",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "b063263d96c8740f"
+            ]
+        ]
+    },
+    {
+        "id": "b8a7815cb78f2ffd",
+        "type": "delay",
+        "z": "d4378eb6b9bc2122",
+        "name": "Delay Left",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 240,
+        "y": 40,
+        "wires": [
+            [
+                "6e784a263e63e3fc"
+            ]
+        ]
+    },
+    {
+        "id": "b063263d96c8740f",
+        "type": "delay",
+        "z": "d4378eb6b9bc2122",
+        "name": "Delay Right",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 250,
+        "y": 120,
+        "wires": [
+            [
+                "48c0c53d500c13a8"
+            ]
+        ]
+    },
+    {
+        "id": "6e784a263e63e3fc",
+        "type": "function",
+        "z": "d4378eb6b9bc2122",
+        "name": "Pass Left",
+        "func": "return{\n    payload:msg.payload,\n    topic:\"Left\"\n};",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 40,
+        "wires": [
+            [
+                "1e82ceddc78ad6eb",
+                "f701c0d24f1aacf0"
+            ]
+        ]
+    },
+    {
+        "id": "48c0c53d500c13a8",
+        "type": "function",
+        "z": "d4378eb6b9bc2122",
+        "name": "Pass Right",
+        "func": "return{\n    payload:msg.payload,\n    topic:\"Right\"\n};",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "52fe78566e68f9de",
+                "f701c0d24f1aacf0"
+            ]
+        ]
+    },
+    {
+        "id": "52fe78566e68f9de",
+        "type": "change",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "rightLDR",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 140,
+        "wires": [
+            [
+                "df8e80b0118c73ce"
+            ]
+        ]
+    },
+    {
+        "id": "1e82ceddc78ad6eb",
+        "type": "change",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "leftLDR",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 100,
+        "wires": [
+            [
+                "df8e80b0118c73ce"
+            ]
+        ]
+    },
+    {
+        "id": "df8e80b0118c73ce",
+        "type": "function",
+        "z": "d4378eb6b9bc2122",
+        "name": "Getting LDR values",
+        "func": "let rightLDR = global.get(\"rightLDR\");\nlet leftLDR = global.get(\"leftLDR\");\n\nif (leftLDR > rightLDR) {\n    return {\n        payload: leftLDR,\n        topic: \"Left Side\"\n    };\n}else{\n    return {\n        payload: rightLDR,\n        topic: \"Right Side\"\n    }\n}\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 120,
+        "wires": [
+            [
+                "ef129584629b6ec3",
+                "6f634c52e5cf60e1"
+            ]
+        ]
+    },
+    {
+        "id": "ef129584629b6ec3",
+        "type": "ui_text",
+        "z": "d4378eb6b9bc2122",
+        "group": "130ac31c87a06e1c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Intensity high at the",
+        "format": "{{topic}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 910,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b7db23d2a910a7be",
+        "type": "ui_dropdown",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "label": "Parameters",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "5106764032ab16c4",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Custom",
+                "value": "Custom",
+                "type": "str"
+            },
+            {
+                "label": "Penicillin",
+                "value": "Penicillin",
+                "type": "str"
+            },
+            {
+                "label": "Insulin",
+                "value": "Insulin",
+                "type": "str"
+            },
+            {
+                "label": "Aspirin",
+                "value": "Aspirin",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "ada182a57db32cc1",
+                "232c0974baaffe7e"
+            ]
+        ]
+    },
+    {
+        "id": "ada182a57db32cc1",
+        "type": "function",
+        "z": "d4378eb6b9bc2122",
+        "name": "Set Angle",
+        "func": "if (msg.payload == \"Penicillin\") {\n    return { payload: 10 };\n} else if (msg.payload == \"Insulin\") {\n    return { payload: 50 };\n} else if (msg.payload == \"Aspirin\") {\n    return { payload: 100 };\n} else {\n    return { payload: 30 };\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "221a16ae9acb57c9"
+            ]
+        ]
+    },
+    {
+        "id": "232c0974baaffe7e",
+        "type": "function",
+        "z": "d4378eb6b9bc2122",
+        "name": "Set contol factor",
+        "func": "if (msg.payload == \"Penicillin\") {\n    return { payload: 0.2 };\n} else if (msg.payload == \"Insulin\") {\n    return { payload: 0.6 };\n} else if (msg.payload == \"Aspirin\") {\n    return { payload: 0.9 };\n} else {\n    return { payload: 0.75 };\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 440,
+        "wires": [
+            [
+                "86ea25b878d7a48a"
+            ]
+        ]
+    },
+    {
+        "id": "221a16ae9acb57c9",
+        "type": "ui_slider",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "label": "Minimum Angle",
+        "tooltip": "",
+        "group": "5106764032ab16c4",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "MIN_ANG",
+        "topicType": "str",
+        "min": 0,
+        "max": "120",
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 360,
+        "wires": [
+            [
+                "c1973195fbca6795"
+            ]
+        ]
+    },
+    {
+        "id": "86ea25b878d7a48a",
+        "type": "ui_slider",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "label": "Controlling Factor",
+        "tooltip": "",
+        "group": "5106764032ab16c4",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "CON_FAC",
+        "topicType": "str",
+        "min": 0,
+        "max": "1",
+        "step": "0.05",
+        "className": "",
+        "x": 570,
+        "y": 440,
+        "wires": [
+            [
+                "b26cfa2306b8c961"
+            ]
+        ]
+    },
+    {
+        "id": "c1973195fbca6795",
+        "type": "mqtt out",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "topic": "PRI-SERVO-MIN-ANG",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1a69bac2a3a00148",
+        "x": 840,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "b26cfa2306b8c961",
+        "type": "mqtt out",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "topic": "PRI-SERVO-CON-FAC",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1a69bac2a3a00148",
+        "x": 850,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "6f634c52e5cf60e1",
+        "type": "ui_gauge",
+        "z": "d4378eb6b9bc2122",
+        "name": "Gauge",
+        "group": "130ac31c87a06e1c",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Highest Intensity",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 710,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "f701c0d24f1aacf0",
+        "type": "ui_chart",
+        "z": "d4378eb6b9bc2122",
+        "name": "",
+        "group": "130ac31c87a06e1c",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "label": "Intensity Variation",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "1",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#72c573",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 670,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1a69bac2a3a00148",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "130ac31c87a06e1c",
+        "type": "ui_group",
+        "name": "Light Intensity",
+        "tab": "e0500ad223139a9e",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5106764032ab16c4",
+        "type": "ui_group",
+        "name": "Servo Parameters",
+        "tab": "e0500ad223139a9e",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e0500ad223139a9e",
+        "type": "ui_tab",
+        "name": "Medibox",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
